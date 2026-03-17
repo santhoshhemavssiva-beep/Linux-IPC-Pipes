@@ -30,6 +30,7 @@ void server(int, int); void client(int, int);
 
 int main() { int p1[2], p2[2], pid; pipe(p1); pipe(p2); pid = fork();
 
+~~~
 if (pid == 0) {
     close(p1[1]); // child closes write end of pipe1
     close(p2[0]); // child closes read end of pipe2
@@ -42,7 +43,7 @@ close(p2[1]); // parent closes write end of pipe2
 client(p1[1], p2[0]);
 wait(NULL);
 return 0;
-
+~~~
 }
 void server(int rfd, int wfd) { int n; char fname[2000], buff[2000]; n = read(rfd, fname, 2000); fname[n] = '\0'; int fd = open(fname, O_RDONLY); if (fd < 0) write(wfd, "can't open", 9); else { n = read(fd, buff, 2000); write(wfd, buff, n); close(fd); } }
 
@@ -61,6 +62,8 @@ void client(int wfd, int rfd) { int n; char fname[2000], buff[2000]; printf("Ent
 void server(); void client();
 
 int main() { pid_t pid;
+
+~~~
 // Create FIFO if it doesn't exist
 mkfifo(FIFO_FILE, 0666);
 
@@ -79,9 +82,12 @@ if (pid > 0) {
 }
 
 return 0;
+
+~~~
 }
 
 // Server: Reads from hello.txt and writes to FIFO void server() { int fifo_fd, file_fd; char buffer[1024]; ssize_t bytes_read;
+~~~
 file_fd = open(FILE_NAME, O_RDONLY);
 if (file_fd == -1) {
     perror("Error opening hello.txt");
@@ -100,10 +106,10 @@ while ((bytes_read = read(file_fd, buffer, sizeof(buffer))) > 0) {
 
 close(file_fd);
 close(fifo_fd);
-
+~~~
 }
 // Client: Reads from FIFO and prints the content void client() { int fifo_fd; char buffer[1024]; ssize_t bytes_read;
-
+~~~
 fifo_fd = open(FIFO_FILE, O_RDONLY);
 if (fifo_fd == -1) {
     perror("Error opening FIFO");
@@ -115,7 +121,7 @@ while ((bytes_read = read(fifo_fd, buffer, sizeof(buffer))) > 0) {
 }
 
 close(fifo_fd);
-
+~~~
 }
 
 
